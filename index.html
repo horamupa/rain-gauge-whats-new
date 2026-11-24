@@ -189,7 +189,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
     <h1>Версия <span>2.3</span></h1>
     <p class="lede">Приложение теперь отвечает не только «сколько выпало», но и «это много или мало для этого места», «хватит ли воды газону» и «сколько ещё выпадет». Новые нормы, счётчик дождливых и ветреных дней, цель полива, прогноз осадков на карте, утренний отчёт и экспорт.</p>
     <div class="meta">
-      <span>версия <b>2.3.0</b> · build <b>93</b></span>
+      <span>версия <b>2.3.0</b> · build <b>95</b></span>
       <span>прошлая: 2.2.1 (92)</span>
       <span>iOS 18+</span>
     </div>
@@ -243,8 +243,8 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
     <p class="where">Map → слой осадков → период 48 Hours</p>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/map-forecast.jpg" alt="Карта Сиэтла с прогнозом осадков за 48 часов: цветные блоки от синего до жёлтого, сверху подпись RRFS 12:00 → Wed 12:00 и шкала от 0,5 до 100 мм" width="640" height="1391" loading="lazy"></div><figcaption>Прогноз RRFS на 48 часов над Сиэтлом</figcaption></figure>
-    <figure><div class="phone"><img src="img/map-settings.jpg" alt="Лист Map Preferences с переключателями Forecast и Precipitation Overlay и сноской об источниках Open-Meteo и CC BY 4.0" width="640" height="1391" loading="lazy"></div><figcaption>Переключатель слоя и атрибуция</figcaption></figure>
+    <figure><div class="phone"><img src="img/map-forecast.jpg" alt="Карта Северной Америки с прогнозом осадков за 48 часов по модели ECMWF: зоны дождя у тихоокеанского побережья и на юго-востоке, сверху подпись ECMWF 08:00 → Thu 08:00 и шкала от 0,5 до 100 мм" width="640" height="1391" loading="lazy"></div><figcaption>Прогноз ECMWF на 48 часов над Северной Америкой</figcaption></figure>
+    <figure><div class="phone"><img src="img/map-settings.jpg" alt="Лист Map Preferences: Pin Style, Map Style, переключатели Forecast и Precipitation Overlay, Precipitation Style и сноска об источниках Open-Meteo и CC BY 4.0" width="640" height="1391" loading="lazy"></div><figcaption>Переключатель слоя и атрибуция</figcaption></figure>
   </div>
 </section>
 
@@ -256,16 +256,15 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
       <p class="sub">Новая карточка на экране локации считает дни с дождём за месяц и сравнивает их с климатической нормой.</p>
     </div>
     <ul>
-      <li>Дождливый день — сумма не меньше порога «Rain day threshold». Для текущего месяца — «N so far» и подписанный период: «Days counted: 1–22 Nov».</li>
+      <li>Дождливый день — сумма не меньше порога «Rain day threshold». Для текущего месяца — «N so far» и подписанный период: «Days counted: 1–23 Nov».</li>
       <li>«Average for…» — норма 1991–2020 по реанализу ERA5 за те же дни.</li>
       <li>«Rain events» — список дней с сильным дождём выше «Event threshold».</li>
-      <li>Предварительные дни, которые модель ещё может пересчитать, помечены точкой.</li>
-      <li>Работает и на вкладке «My Log» — по показаниям вашего дождемера.</li>
+            <li>Работает и на вкладке «My Log» — по показаниям вашего дождемера.</li>
     </ul>
     <p class="where">Rainfall → карточка локации → Rain Days</p>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/rain-days.jpg" alt="Карточка Rain Days для Сиэтла: 7 дождливых дней с 1 по 22 ноября при норме 10,5; ниже события 7 и 10 ноября по 16 и 18 мм и годовой график с нормой" width="640" height="1391" loading="lazy"></div><figcaption>7 дождливых дней при норме 10,5</figcaption></figure>
+    <figure><div class="phone"><img src="img/rain-days.jpg" alt="Карточки Weekly Watering Goal и Rain Days для Сиэтла: 7 дождливых дней с 1 по 23 ноября при норме 11,1; события 7 и 10 ноября по 16 и 18 мм; 13 ветреных дней" width="640" height="1391" loading="lazy"></div><figcaption>7 дождливых дней при норме 11,1</figcaption></figure>
   </div>
 </section>
 
@@ -277,7 +276,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
       <p class="sub">Каждая сумма теперь видна на фоне многолетней нормы для этой точки.</p>
     </div>
     <ul>
-      <li>Накопительный график: пунктир «Normal» и строка «2026: 751 mm · Normal: 1 081 mm (69 %)» на один и тот же день сезона.</li>
+      <li>Накопительный график: пунктир «Normal» и строка «2026: 753 mm · Normal: 1 088 mm (69 %)» на один и тот же день сезона.</li>
       <li>Месячные бары: риска нормы над каждым месяцем и «N % of normal to date» в заголовке.</li>
       <li>Календарь: «% of normal» за прошлый месяц и «to date» за текущий.</li>
       <li>Сезон можно начинать с любого месяца: удобно для водного года (октябрь–сентябрь) или сельхозсезона. Чипы становятся «2025–26».</li>
@@ -286,7 +285,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
     <p class="where">Rainfall → карточка локации → Cumulative precipitation</p>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/normals.jpg" alt="Накопительный график осадков 2026 года в Сиэтле зелёной линией против пунктира нормы; подпись 751 мм против нормы 1 081 мм, 69 %" width="640" height="1391" loading="lazy"></div><figcaption>2026 год: 69 % от нормы на сегодня</figcaption></figure>
+    <figure><div class="phone"><img src="img/normals.jpg" alt="Накопительный график осадков 2026 года в Сиэтле зелёной линией против пунктира нормы; подпись 753 мм против нормы 1 088 мм, 69 %" width="640" height="1391" loading="lazy"></div><figcaption>2026 год: 69 % от нормы на сегодня</figcaption></figure>
   </div>
 </section>
 
@@ -298,22 +297,24 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
       <p class="sub">Карточка «Weekly Watering Goal» отвечает на главный вопрос садовода: поливать или дождь справится сам.</p>
     </div>
     <ul>
-      <li>Прогресс-бар: сколько выпало за 7 дней против цели («3 mm of 25 mm since 16 Nov»).</li>
+      <li>Прогресс-бар: сколько выпало за 7 дней против цели («8 mm of 25 mm since 17 Nov»).</li>
       <li>Вердикт: «Goal reached», «Forecast may cover it» или «Water needed: Z more».</li>
       <li>Прогноз на следующие 3 дня отдельной строкой.</li>
       <li>Цель задаётся в Rain Statistics: от 10 до 40 мм или от 0,5 до 2″.</li>
     </ul>
     <div class="head" style="margin-top:.75rem">
       <div class="tags"><span class="tag">Улучшено</span><span class="tag free">Бесплатно</span></div>
-      <h3 style="font:600 1.1rem/1.3 var(--font-body)">Откуда эта цифра</h3>
+      <h3 style="font:600 1.1rem/1.3 var(--font-body)">Меньше подписей на экране локации</h3>
     </div>
     <ul>
-      <li>Под календарём — сноска: какая модель дала данные (via Open-Meteo), что это оценка по ячейке сетки, а не точечный замер, и в каком часовом поясе считаются сутки.</li>
-      <li>Свежие дни помечены точкой «preliminary»: модель ещё может их уточнить.</li>
+      <li>Под календарём больше нет мелкой сноски об источнике: модель видна в переключателе вкладок, а технические оговорки (сетка модели, граница суток) остались только в шапке экспорта.</li>
+      <li>Атрибуция Open-Meteo переехала в Settings → Legal: строка «Weather data by Open-Meteo.com».</li>
+      <li>Убраны точки «preliminary» в календаре и подпись «Today counts in full…» у цели полива — экран стал чище.</li>
     </ul>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/goal.jpg" alt="Календарь ноября со суммами по дням, под ним сноска об источнике данных и карточка Weekly Watering Goal: 3 из 25 мм, Forecast may cover it, прогноз на 3 дня 56 мм" width="640" height="1391" loading="lazy"></div><figcaption>Сноска об источнике и цель полива</figcaption></figure>
+    <figure><div class="phone"><img src="img/goal.jpg" alt="Календарь ноября для Сиэтла без сноски под ним, сразу за ним карточка Weekly Watering Goal: 8 из 25 мм с 17 ноября, Forecast may cover it, прогноз на 3 дня 41 мм" width="640" height="1391" loading="lazy"></div><figcaption>Календарь без сноски, сразу цель полива: 8 из 25 мм</figcaption></figure>
+    <figure><div class="phone"><img src="img/legal.jpg" alt="Раздел Legal в настройках: Privacy Policy, Terms of Service и новая строка Weather data by Open-Meteo.com" width="640" height="1391" loading="lazy"></div><figcaption>Атрибуция Open-Meteo теперь в Settings → Legal</figcaption></figure>
     <figure><div class="phone"><img src="img/rain-stats.jpg" alt="Экран Rain Statistics: начало сезона, пороги дождливого дня и события, недельная цель, пороги ветра и порывов" width="640" height="1391" loading="lazy"></div><figcaption>Цель и все пороги — в Rain Statistics</figcaption></figure>
   </div>
 </section>
@@ -335,8 +336,8 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
     <p class="where">Settings → Rain Statistics</p>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/windy-days.jpg" alt="Карточка Rain Days с новым блоком Windy days: порывы от 30 км/ч, 12 ветреных дней с начала ноября" width="640" height="1391" loading="lazy"></div><figcaption>Windy days: 12 дней с порывами от 30 км/ч</figcaption></figure>
-    <figure><div class="phone"><img src="img/wind-calendar.jpg" alt="Календарь ноября: на ветреных днях в углу ячейки значок ветра, включая прогнозные дни" width="640" height="1391" loading="lazy"></div><figcaption>Значок ветра в календаре</figcaption></figure>
+    <figure><div class="phone"><img src="img/windy-days.jpg" alt="Блок Windy days в карточке Rain Days: порывы от 30 км/ч, 13 ветреных дней с начала ноября; ниже месячные бары 2026 года с нормой" width="640" height="1391" loading="lazy"></div><figcaption>Windy days: 13 дней с порывами от 30 км/ч</figcaption></figure>
+    <figure><div class="phone"><img src="img/wind-calendar.jpg" alt="Календарь ноября для Сиэтла: суммы по дням, 47 % нормы на сегодня, значок ветра в углу ветреных дней, включая прогнозные; под календарём больше нет сноски" width="640" height="1391" loading="lazy"></div><figcaption>Значок ветра в календаре</figcaption></figure>
   </div>
 </section>
 
@@ -368,7 +369,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
       <p class="sub">Для тех, кто ведёт свой журнал: насколько модель расходится с вашим дождемером.</p>
     </div>
     <ul>
-      <li>У каждого замера — сумма модели за период с предыдущего замера (до 8 суток) и разница: «0,70 mm more than the model».</li>
+      <li>У каждого замера — сумма модели за период с предыдущего замера (до 8 суток) и разница: «0,40 mm less than the model».</li>
       <li>В шапке месяца — итог «Gauge · Model» по всем сравнимым замерам.</li>
       <li>Модель — основной провайдер локации; для старых замеров архив догружается автоматически.</li>
       <li>Первый замер сравнивать не с чем, он подписан «No earlier reading to compare with».</li>
@@ -376,7 +377,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
     <p class="where">Экран локации → меню «…» → View All Readings</p>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/gauge.jpg" alt="Экран View All Readings для Сиэтла: в ноябре дождемер 4,00 мм против модели 3,30 мм, у замера 22 ноября подпись 0,70 mm more than the model" width="640" height="1391" loading="lazy"></div><figcaption>Дождемер 4,00 мм против модели 3,30 мм</figcaption></figure>
+    <figure><div class="phone"><img src="img/gauge.jpg" alt="Экран View All Readings для Сиэтла: в ноябре дождемер 4,00 мм против модели 4,40 мм, у замера 22 ноября подпись 0,40 mm less than the model" width="640" height="1391" loading="lazy"></div><figcaption>Дождемер 4,00 мм против модели 4,40 мм</figcaption></figure>
   </div>
 </section>
 <section class="feature" id="export">
@@ -395,7 +396,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
     <p class="where">Экран локации → меню «…» → Export Data</p>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/export.jpg" alt="Лист Export Data: период Last 30 Days с 24 октября по 22 ноября, формат PDF, источник Auto via Open-Meteo и системное меню Share с файлом Seattle_2026-10-24_2026-11-22, PDF 26 КБ" width="640" height="1391" loading="lazy"></div><figcaption>PDF за 30 дней готов к отправке</figcaption></figure>
+    <figure><div class="phone"><img src="img/export.jpg" alt="Лист Export Data: период Last 30 Days с 25 октября по 23 ноября, формат PDF, источник Auto via Open-Meteo и системное меню Share с файлом Seattle_2026-10-25_2026-11-23, PDF 27 КБ" width="640" height="1391" loading="lazy"></div><figcaption>PDF за 30 дней готов к отправке</figcaption></figure>
   </div>
 </section>
 
@@ -415,7 +416,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
     <p class="where">Rainfall → список локаций</p>
   </div>
   <div class="shots">
-    <figure><div class="phone"><img src="img/shared-scale.jpg" alt="Список локаций: у карточек Факт и Seattle графики осадков за 48 часов с одинаковой осью 0,05 / 0,1 / 0,2; у Seattle столбики выше" width="640" height="1391" loading="lazy"></div><figcaption>Факт и Сиэтл на одной оси: сразу видно, где дождь сильнее</figcaption></figure>
+    <figure><div class="phone"><img src="img/shared-scale.jpg" alt="Список локаций: у карточек Факт и Seattle графики осадков за 48 часов на одной оси 0,1 / 0,2" width="640" height="1391" loading="lazy"></div><figcaption>Факт и Сиэтл на одной оси: высоты столбиков можно сравнивать</figcaption></figure>
   </div>
 </section>
 
@@ -440,7 +441,7 @@ footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
   </div>
 </section>
 
-<footer>Скриншоты сняты на iPhone 17 Pro, версия 2.3.0 (сборки 93 и 94), локация — Сиэтл, 23 ноября 2026.</footer>
+<footer>Скриншоты сняты на iPhone 17 Pro, версия 2.3.0 (build 95), локация — Сиэтл, 24 ноября 2026.</footer>
 
 </div>
 </body>
