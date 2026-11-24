@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style>
+<title>Rain Gauge 2.3</title>
+<meta name="description" content="Что нового в Rain Gauge 2.3: прогноз осадков на карте, Rain Days, нормы, цель полива, ветреные дни, утренний отчёт, сверка с дождемером и экспорт.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: release notes as a column of feature rows — text left, phone screenshots right; a graduated "gauge" scale marks the hero. */
+:root {
+  --bg: #EDF1F5;
+  --surface: #FFFFFF;
+  --ink: #0F1B27;
+  --muted: #566676;
+  --line: #D2DBE4;
+  --accent: #0A64E6;
+  --accent-soft: #DDE9FB;
+  --free: #1B7F47;
+  --free-soft: #DDF2E5;
+  --prem: #8F5600;
+  --prem-soft: #F8EBD3;
+  --phone: #0B0F14;
+  --font-display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1017; --surface: #111A24; --ink: #E5ECF3; --muted: #8C9CAC; --line: #223142;
+    --accent: #4D9EFF; --accent-soft: #13243A; --free: #55C487; --free-soft: #12291D;
+    --prem: #E6A746; --prem-soft: #2C2111; --phone: #000000; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1017; --surface: #111A24; --ink: #E5ECF3; --muted: #8C9CAC; --line: #223142;
+  --accent: #4D9EFF; --accent-soft: #13243A; --free: #55C487; --free-soft: #12291D;
+  --prem: #E6A746; --prem-soft: #2C2111; --phone: #000000; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1rem/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 4rem;
+}
+.wrap { max-width: 1040px; margin: 0 auto; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, .toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+/* Hero */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: end;
+  padding-block: 3.5rem 2.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  font: 600 .75rem/1 var(--font-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero h1 {
+  font: 700 clamp(2.2rem, 6vw, 3.8rem)/1.05 var(--font-display);
+  letter-spacing: -.02em;
+  margin-top: .9rem;
+}
+.hero h1 span { color: var(--accent); }
+.hero .lede { margin-top: 1.1rem; max-width: 60ch; font-size: 1.12rem; color: var(--muted); }
+.hero .meta {
+  margin-top: 1.4rem;
+  display: flex; flex-wrap: wrap; gap: .5rem 1.25rem;
+  font: 400 .85rem/1.4 var(--font-mono); color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.hero .meta b { color: var(--ink); font-weight: 600; }
+
+.gauge { width: 92px; }
+.gauge svg { display: block; width: 100%; height: auto; }
+@media (max-width: 640px) {
+  .hero { grid-template-columns: 1fr; padding-block: 2.5rem 2rem; }
+  .gauge { display: none; }
+}
+
+/* Contents */
+.toc {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: .5rem 1.5rem;
+  padding-block: 1.75rem;
+  margin: 0; list-style: none; padding-left: 0;
+  border-bottom: 1px solid var(--line);
+}
+.toc li { min-width: 0; }
+.toc a {
+  display: flex; align-items: baseline; gap: .6rem;
+  color: var(--ink); text-decoration: none; padding: .2rem 0;
+}
+.toc a:hover .t { color: var(--accent); }
+.toc .n { font: 600 .75rem/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; min-width: 1.6rem; }
+.toc .t { font-weight: 500; }
+
+/* Feature rows */
+.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 2.5rem;
+  padding-block: 3.25rem;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 1rem;
+}
+.feature .text { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.feature .head { display: flex; flex-direction: column; gap: .65rem; }
+.feature h2 { font: 700 clamp(1.35rem, 3vw, 1.75rem)/1.2 var(--font-display); letter-spacing: -.01em; }
+.feature .sub { font-size: 1.05rem; color: var(--muted); max-width: 52ch; }
+.feature ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .45rem; max-width: 58ch; }
+.feature li::marker { color: var(--accent); }
+.tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+.tag {
+  font: 600 .72rem/1 var(--font-mono); letter-spacing: .04em; text-transform: uppercase;
+  padding: .38rem .55rem; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent);
+}
+.tag.free { background: var(--free-soft); color: var(--free); }
+.tag.prem { background: var(--prem-soft); color: var(--prem); }
+.where { font: 400 .82rem/1.5 var(--font-mono); color: var(--muted); }
+
+.shots { display: flex; gap: 1rem; justify-content: center; align-items: flex-start; min-width: 0; }
+figure { margin: 0; display: flex; flex-direction: column; gap: .6rem; flex: 1 1 0; max-width: 270px; min-width: 0; }
+.phone {
+  background: var(--phone);
+  border-radius: 13.5% / 6.2%;
+  padding: 5px;
+  box-shadow: 0 1px 0 var(--line), 0 18px 40px -22px rgba(10, 30, 60, .45);
+}
+.phone img { display: block; width: 100%; height: auto; max-width: 100%; border-radius: 12.5% / 5.8%; }
+figcaption { font-size: .82rem; line-height: 1.45; color: var(--muted); text-align: center; }
+
+@media (max-width: 820px) {
+  .feature { grid-template-columns: 1fr; gap: 1.75rem; padding-block: 2.5rem; }
+}
+
+/* Plan table */
+.plans { padding-block: 3.25rem 1rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.plans h2 { font: 700 clamp(1.35rem, 3vw, 1.75rem)/1.2 var(--font-display); }
+.plans p { color: var(--muted); max-width: 62ch; }
+.tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: .95rem; }
+th, td { text-align: left; padding: .75rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font: 600 .72rem/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+td.state { white-space: nowrap; }
+
+
+/* Text-only cards */
+.more { padding-block: 3.25rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 1.5rem; scroll-margin-top: 1rem; }
+.more h2 { font: 700 clamp(1.35rem, 3vw, 1.75rem)/1.2 var(--font-display); }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.25rem; display: flex; flex-direction: column; gap: .7rem; min-width: 0; }
+.card h3 { font: 600 1.15rem/1.3 var(--font-body); }
+.card p { font-size: .95rem; }
+@media (max-width: 820px) { .cards { grid-template-columns: 1fr; } }
+
+footer { padding-top: 2rem; font-size: .85rem; color: var(--muted); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gauge .level { animation: fill 1.4s cubic-bezier(.2,.7,.2,1) both; transform-origin: 50% 100%; transform-box: fill-box; }
+  @keyframes fill { from { transform: scaleY(.15); } to { transform: scaleY(1); } }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div>
+    <div class="eyebrow">Rain Gauge · что нового</div>
+    <h1>Версия <span>2.3</span></h1>
+    <p class="lede">Приложение теперь отвечает не только «сколько выпало», но и «это много или мало для этого места», «хватит ли воды газону» и «сколько ещё выпадет». Новые нормы, счётчик дождливых и ветреных дней, цель полива, прогноз осадков на карте, утренний отчёт и экспорт.</p>
+    <div class="meta">
+      <span>версия <b>2.3.0</b> · build <b>93</b></span>
+      <span>прошлая: 2.2.1 (92)</span>
+      <span>iOS 18+</span>
+    </div>
+  </div>
+  <div class="gauge" aria-hidden="true">
+    <svg viewBox="0 0 92 240" xmlns="http://www.w3.org/2000/svg">
+      <rect x="22" y="8" width="44" height="222" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+      <rect class="level" x="24" y="88" width="40" height="140" rx="8" fill="var(--accent)" opacity=".9"/>
+      <g stroke="var(--muted)" stroke-width="1.5">
+        <line x1="66" y1="40" x2="78" y2="40"/><line x1="66" y1="62" x2="72" y2="62"/>
+        <line x1="66" y1="84" x2="78" y2="84"/><line x1="66" y1="106" x2="72" y2="106"/>
+        <line x1="66" y1="128" x2="78" y2="128"/><line x1="66" y1="150" x2="72" y2="150"/>
+        <line x1="66" y1="172" x2="78" y2="172"/><line x1="66" y1="194" x2="72" y2="194"/>
+        <line x1="66" y1="216" x2="78" y2="216"/>
+      </g>
+      <g font-family="JetBrains Mono, monospace" font-size="9" fill="var(--muted)">
+        <text x="80" y="43">40</text><text x="80" y="87">30</text><text x="80" y="131">20</text>
+        <text x="80" y="175">10</text><text x="80" y="219">0</text>
+      </g>
+      <text x="4" y="92" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--accent)">mm</text>
+    </svg>
+  </div>
+</header>
+
+<ol class="toc">
+  <li><a href="#map"><span class="n">01</span><span class="t">Прогноз осадков на карте</span></a></li>
+  <li><a href="#rain-days"><span class="n">02</span><span class="t">Rain Days</span></a></li>
+  <li><a href="#normals"><span class="n">03</span><span class="t">Нормы и сезоны</span></a></li>
+  <li><a href="#goal"><span class="n">04</span><span class="t">Цель полива и источник данных</span></a></li>
+  <li><a href="#wind"><span class="n">05</span><span class="t">Ветреные дни и пороги</span></a></li>
+  <li><a href="#report"><span class="n">06</span><span class="t">Утренний отчёт</span></a></li>
+  <li><a href="#gauge"><span class="n">07</span><span class="t">Сверка с дождемером</span></a></li>
+  <li><a href="#export"><span class="n">08</span><span class="t">Экспорт CSV и PDF</span></a></li>
+  <li><a href="#scale"><span class="n">09</span><span class="t">Одна шкала графиков</span></a></li>
+  <li><a href="#plans"><span class="n">··</span><span class="t">Что бесплатно, что Premium</span></a></li>
+</ol>
+
+<section class="feature" id="map">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag prem">Premium</span></div>
+      <h2>Сколько выпадет за 12, 24 и 48 часов</h2>
+      <p class="sub">Слой осадков на карте умеет показывать будущее: сумму дождя за выбранное окно по прогнозной модели.</p>
+    </div>
+    <ul>
+      <li>Включается тем же переключателем «Precipitation Overlay», что и радар. Прогноз появляется, когда выбран период 12h / 24h / 48h и включён «Forecast»; в остальных случаях остаётся радар.</li>
+      <li>Модель подбирается под видимую область: для США — RRFS, дальше — региональные модели DWD, ECMWF, Météo-France, UK Met Office, ECCC, JMA и других.</li>
+      <li>Над картой — подпись «модель · начало → конец» и легенда в единицах пользователя (мм или дюймы).</li>
+      <li>В настройках карты — атрибуция источников и лицензии CC BY 4.0.</li>
+    </ul>
+    <p class="where">Map → слой осадков → период 48 Hours</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/map-forecast.jpg" alt="Карта Сиэтла с прогнозом осадков за 48 часов: цветные блоки от синего до жёлтого, сверху подпись RRFS 12:00 → Wed 12:00 и шкала от 0,5 до 100 мм" width="640" height="1391" loading="lazy"></div><figcaption>Прогноз RRFS на 48 часов над Сиэтлом</figcaption></figure>
+    <figure><div class="phone"><img src="img/map-settings.jpg" alt="Лист Map Preferences с переключателями Forecast и Precipitation Overlay и сноской об источниках Open-Meteo и CC BY 4.0" width="640" height="1391" loading="lazy"></div><figcaption>Переключатель слоя и атрибуция</figcaption></figure>
+  </div>
+</section>
+
+<section class="feature" id="rain-days">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag prem">Premium</span></div>
+      <h2>Rain Days: сколько было дождливых дней</h2>
+      <p class="sub">Новая карточка на экране локации считает дни с дождём за месяц и сравнивает их с климатической нормой.</p>
+    </div>
+    <ul>
+      <li>Дождливый день — сумма не меньше порога «Rain day threshold». Для текущего месяца — «N so far» и подписанный период: «Days counted: 1–22 Nov».</li>
+      <li>«Average for…» — норма 1991–2020 по реанализу ERA5 за те же дни.</li>
+      <li>«Rain events» — список дней с сильным дождём выше «Event threshold».</li>
+      <li>Предварительные дни, которые модель ещё может пересчитать, помечены точкой.</li>
+      <li>Работает и на вкладке «My Log» — по показаниям вашего дождемера.</li>
+    </ul>
+    <p class="where">Rainfall → карточка локации → Rain Days</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/rain-days.jpg" alt="Карточка Rain Days для Сиэтла: 7 дождливых дней с 1 по 22 ноября при норме 10,5; ниже события 7 и 10 ноября по 16 и 18 мм и годовой график с нормой" width="640" height="1391" loading="lazy"></div><figcaption>7 дождливых дней при норме 10,5</figcaption></figure>
+  </div>
+</section>
+
+<section class="feature" id="normals">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag free">Бесплатно</span></div>
+      <h2>Нормы: много это или мало</h2>
+      <p class="sub">Каждая сумма теперь видна на фоне многолетней нормы для этой точки.</p>
+    </div>
+    <ul>
+      <li>Накопительный график: пунктир «Normal» и строка «2026: 751 mm · Normal: 1 081 mm (69 %)» на один и тот же день сезона.</li>
+      <li>Месячные бары: риска нормы над каждым месяцем и «N % of normal to date» в заголовке.</li>
+      <li>Календарь: «% of normal» за прошлый месяц и «to date» за текущий.</li>
+      <li>Сезон можно начинать с любого месяца: удобно для водного года (октябрь–сентябрь) или сельхозсезона. Чипы становятся «2025–26».</li>
+      <li>Норма — ERA5 1991–2020, кэшируется на устройстве.</li>
+    </ul>
+    <p class="where">Rainfall → карточка локации → Cumulative precipitation</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/normals.jpg" alt="Накопительный график осадков 2026 года в Сиэтле зелёной линией против пунктира нормы; подпись 751 мм против нормы 1 081 мм, 69 %" width="640" height="1391" loading="lazy"></div><figcaption>2026 год: 69 % от нормы на сегодня</figcaption></figure>
+  </div>
+</section>
+
+<section class="feature" id="goal">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag free">Бесплатно</span></div>
+      <h2>Цель полива на неделю</h2>
+      <p class="sub">Карточка «Weekly Watering Goal» отвечает на главный вопрос садовода: поливать или дождь справится сам.</p>
+    </div>
+    <ul>
+      <li>Прогресс-бар: сколько выпало за 7 дней против цели («3 mm of 25 mm since 16 Nov»).</li>
+      <li>Вердикт: «Goal reached», «Forecast may cover it» или «Water needed: Z more».</li>
+      <li>Прогноз на следующие 3 дня отдельной строкой.</li>
+      <li>Цель задаётся в Rain Statistics: от 10 до 40 мм или от 0,5 до 2″.</li>
+    </ul>
+    <div class="head" style="margin-top:.75rem">
+      <div class="tags"><span class="tag">Улучшено</span><span class="tag free">Бесплатно</span></div>
+      <h3 style="font:600 1.1rem/1.3 var(--font-body)">Откуда эта цифра</h3>
+    </div>
+    <ul>
+      <li>Под календарём — сноска: какая модель дала данные (via Open-Meteo), что это оценка по ячейке сетки, а не точечный замер, и в каком часовом поясе считаются сутки.</li>
+      <li>Свежие дни помечены точкой «preliminary»: модель ещё может их уточнить.</li>
+    </ul>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/goal.jpg" alt="Календарь ноября со суммами по дням, под ним сноска об источнике данных и карточка Weekly Watering Goal: 3 из 25 мм, Forecast may cover it, прогноз на 3 дня 56 мм" width="640" height="1391" loading="lazy"></div><figcaption>Сноска об источнике и цель полива</figcaption></figure>
+    <figure><div class="phone"><img src="img/rain-stats.jpg" alt="Экран Rain Statistics: начало сезона, пороги дождливого дня и события, недельная цель, пороги ветра и порывов" width="640" height="1391" loading="lazy"></div><figcaption>Цель и все пороги — в Rain Statistics</figcaption></figure>
+  </div>
+</section>
+
+<section class="feature" id="wind">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag free">Настройки бесплатно</span></div>
+      <h2>Ветреные дни и Rain Statistics</h2>
+      <p class="sub">Новый экран «Rain Statistics» собирает все пороги в одном месте, а к дождю добавился ветер.</p>
+    </div>
+    <ul>
+      <li>Начало сезона, порог дождливого дня, порог «события», недельная цель полива.</li>
+      <li>«Wind threshold» и «Gust threshold»: устойчивый ветер и порывы на высоте 10 м, пресеты в км/ч или mph, по умолчанию выключены.</li>
+      <li>При заданном пороге в Rain Days появляется блок «Windy days», а в календаре — значок ветра на ветреных днях.</li>
+      <li>Ветер и порывы попадают в экспорт CSV и PDF отдельными колонками.</li>
+      <li>Открывается из Settings → Preferences и кнопками-ползунками на карточках.</li>
+    </ul>
+    <p class="where">Settings → Rain Statistics</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/windy-days.jpg" alt="Карточка Rain Days с новым блоком Windy days: порывы от 30 км/ч, 12 ветреных дней с начала ноября" width="640" height="1391" loading="lazy"></div><figcaption>Windy days: 12 дней с порывами от 30 км/ч</figcaption></figure>
+    <figure><div class="phone"><img src="img/wind-calendar.jpg" alt="Календарь ноября: на ветреных днях в углу ячейки значок ветра, включая прогнозные дни" width="640" height="1391" loading="lazy"></div><figcaption>Значок ветра в календаре</figcaption></figure>
+  </div>
+</section>
+
+<section class="feature" id="report">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag free">Бесплатно</span></div>
+      <h2>Утренний отчёт о дожде</h2>
+      <p class="sub">Одно уведомление утром с фактом за последние сутки, а не с прогнозом.</p>
+    </div>
+    <ul>
+      <li>Список локаций, где за 24 часа выпал дождь, по убыванию; до трёх локаций и «and N more».</li>
+      <li>Цифра в уведомлении совпадает со строкой «24 Hours» на экране локации.</li>
+      <li>Дождя не было — уведомления нет. Время отчёта настраивается, по умолчанию 08:00.</li>
+      <li>Включается только по явному согласию: в онбординге, промо-карточкой на экране локации или здесь, в настройках.</li>
+      <li>Если уведомления запрещены в iOS, экран говорит об этом и ведёт в настройки системы кнопкой «Open Settings».</li>
+    </ul>
+    <p class="where">Settings → Notifications → Morning Rain Report</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/report.jpg" alt="Экран Notifications: переключатель Morning Rain Report с подписью про последние 24 часа, время 08:00 и подсказка Notifications are turned off in iOS Settings с кнопкой Open Settings" width="640" height="1391" loading="lazy"></div><figcaption>Отчёт и подсказка, если уведомления выключены в iOS</figcaption></figure>
+  </div>
+</section>
+<section class="feature" id="gauge">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag free">Бесплатно</span></div>
+      <h2>Сверка с дождемером</h2>
+      <p class="sub">Для тех, кто ведёт свой журнал: насколько модель расходится с вашим дождемером.</p>
+    </div>
+    <ul>
+      <li>У каждого замера — сумма модели за период с предыдущего замера (до 8 суток) и разница: «0,70 mm more than the model».</li>
+      <li>В шапке месяца — итог «Gauge · Model» по всем сравнимым замерам.</li>
+      <li>Модель — основной провайдер локации; для старых замеров архив догружается автоматически.</li>
+      <li>Первый замер сравнивать не с чем, он подписан «No earlier reading to compare with».</li>
+    </ul>
+    <p class="where">Экран локации → меню «…» → View All Readings</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/gauge.jpg" alt="Экран View All Readings для Сиэтла: в ноябре дождемер 4,00 мм против модели 3,30 мм, у замера 22 ноября подпись 0,70 mm more than the model" width="640" height="1391" loading="lazy"></div><figcaption>Дождемер 4,00 мм против модели 3,30 мм</figcaption></figure>
+  </div>
+</section>
+<section class="feature" id="export">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Новое</span><span class="tag prem">Premium</span></div>
+      <h2>Экспорт CSV и PDF</h2>
+      <p class="sub">Суточные данные одним файлом: для страховой, агронома, заказчика или своей таблицы.</p>
+    </div>
+    <ul>
+      <li>Периоды: This Month, Last Month, Last 30 Days, This Season или свои даты, до 366 дней.</li>
+      <li>Только полные сутки, по вчерашний день; дни без данных остаются пустыми, и экран об этом предупреждает.</li>
+      <li>В файле — модель, ваш дождемер, ветер и порывы; источник подписан прямо в листе.</li>
+      <li>Файл собирается сразу при смене параметров и уходит через стандартный Share: почта, Files, мессенджеры.</li>
+    </ul>
+    <p class="where">Экран локации → меню «…» → Export Data</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/export.jpg" alt="Лист Export Data: период Last 30 Days с 24 октября по 22 ноября, формат PDF, источник Auto via Open-Meteo и системное меню Share с файлом Seattle_2026-10-24_2026-11-22, PDF 26 КБ" width="640" height="1391" loading="lazy"></div><figcaption>PDF за 30 дней готов к отправке</figcaption></figure>
+  </div>
+</section>
+
+<section class="feature" id="scale">
+  <div class="text">
+    <div class="head">
+      <div class="tags"><span class="tag">Улучшено</span><span class="tag free">Бесплатно</span></div>
+      <h2>Одна шкала для всех графиков в списке</h2>
+      <p class="sub">Графики на карточках локаций теперь можно сравнивать на глаз: столбик одной высоты означает одно и то же количество осадков.</p>
+    </div>
+    <ul>
+      <li>Раньше каждая карточка подгоняла ось Y под свой максимум, и морось в одном месте выглядела так же, как ливень в другом.</li>
+      <li>Теперь шкала одна на весь список: она строится по самому сильному пику среди всех локаций, с запасом 10 %.</li>
+      <li>Если в одной локации ливень, графики остальных станут ниже. Это сделано намеренно: так видно, где льёт сильнее.</li>
+      <li>Если осадков нет нигде, каждая карточка берёт свою шкалу, как раньше. Вкладка «My Log» и компактный стиль карточек без графиков не меняются.</li>
+    </ul>
+    <p class="where">Rainfall → список локаций</p>
+  </div>
+  <div class="shots">
+    <figure><div class="phone"><img src="img/shared-scale.jpg" alt="Список локаций: у карточек Факт и Seattle графики осадков за 48 часов с одинаковой осью 0,05 / 0,1 / 0,2; у Seattle столбики выше" width="640" height="1391" loading="lazy"></div><figcaption>Факт и Сиэтл на одной оси: сразу видно, где дождь сильнее</figcaption></figure>
+  </div>
+</section>
+
+<section class="plans" id="plans">
+  <h2>Что бесплатно, что Premium</h2>
+  <p>Строки «7 Days» и «30 Days» в Past Time Series стали бесплатными. Длинный период сам по себе больше не закрыт: нормы, сезоны и проценты доступны всем.</p>
+  <div class="tablebox">
+    <table>
+      <thead><tr><th>Функция</th><th>Доступ</th><th>Где</th></tr></thead>
+      <tbody>
+        <tr><td>7 и 30 дней в Past Time Series</td><td class="state"><span class="tag free">Бесплатно</span></td><td>Экран локации</td></tr>
+        <tr><td>Нормы, «% of normal», сезоны</td><td class="state"><span class="tag free">Бесплатно</span></td><td>Графики и календарь</td></tr>
+        <tr><td>Weekly Watering Goal</td><td class="state"><span class="tag free">Бесплатно</span></td><td>Под календарём</td></tr>
+        <tr><td>Утренний отчёт</td><td class="state"><span class="tag free">Бесплатно</span></td><td>Уведомления</td></tr>
+        <tr><td>Сверка дождемера с моделью</td><td class="state"><span class="tag free">Бесплатно</span></td><td>View All Readings</td></tr>
+        <tr><td>Rain Days и Windy days</td><td class="state"><span class="tag prem">Premium</span></td><td>Экран локации</td></tr>
+        <tr><td>Экспорт CSV / PDF</td><td class="state"><span class="tag prem">Premium</span></td><td>Меню «…» → Export Data</td></tr>
+        <tr><td>Прогноз и радар на карте</td><td class="state"><span class="tag prem">Premium</span></td><td>Map</td></tr>
+        <tr><td>365 дней, будущие дни календаря</td><td class="state"><span class="tag prem">Premium</span></td><td>Экран локации</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>Скриншоты сняты на iPhone 17 Pro, версия 2.3.0 (сборки 93 и 94), локация — Сиэтл, 23 ноября 2026.</footer>
+
+</div>
+</body>
+</html>
